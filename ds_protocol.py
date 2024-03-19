@@ -43,7 +43,7 @@ def direct_message(user_token: str, message: str, recipient: str, timestamp: str
    direct_msg = {"token" : user_token, "directmessage" : {"entry" : message, "recipient" : recipient, "timestamp" : timestamp}}
    return json.dumps(direct_msg)
 
-def msgs_response(user_token : str, send_message: str):
+def msgs_response(user_token : str, send_message: str): #send_message here is either "new" or "all"
    resp_msg = {"token" : user_token, "directmessage" : send_message}
    return json.dumps(resp_msg)
    
