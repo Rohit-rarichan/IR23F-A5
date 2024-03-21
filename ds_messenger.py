@@ -11,12 +11,12 @@ class DirectMessage:
 
 
 class DirectMessenger:
-  def __init__(self, dsuserver=None, username=None, password=None):
-    self.token = None
+  def __init__(self, username=None, password=None):
     self.dsuserver = "168.235.86.101"
-    self.username = None
-    self.password = None
+    self.username = username
+    self.password = password
     self.client = None
+    self.token = None
 
 		
   def send(self, message:str, recipient:str) -> bool:
@@ -24,43 +24,48 @@ class DirectMessenger:
     try:
       self.client = connect_to_server(self.dsuserver)
       timestamp = get_timestamp()
-      username = input("Enter your username: ")
-      password = input("Enter the password: ")
-      join_msg = join(username, password)
-      self.client.send(join_msg.encode('utf-8'))
-      resp = self.client.recv(1024).decode()
-      response_json = json.loads(resp)
-      if response_json['response']['type'] == 'ok':
-        self.token = response_json['response']['token']
-        send_to_recipient = direct_message(self.token, message, recipient, timestamp)
-        self.client.send(send_to_recipient.encode('utf-8'))
-        response1 = self.client.recv(1024).decode()
-        print(response1)
-
-
+      if self.username and self.password:
+        join_msg = join(self.username, self.password)
+        self.client.send(join_msg.encode('utf-8'))
+        resp = self.client.recv(1024).decode()
+        response_json = json.loads(resp)
+        if response_json['response']['type'] == 'ok':
+          self.token = response_json['response']['token']
+          send_to_recipient = direct_message(self.token, message, recipient, timestamp)
+          self.client.send(send_to_recipient.encode('utf-8'))
+          response1 = self.client.recv(1024).decode()
+          print(response1)
+          return True
     except:
       pass
 		
   def retrieve_new(self) -> list:
-    send_message = "new"
-    reading_msgs = msgs_response(self.token, send_message)
-    self.client.send(reading_msgs.encode('utf-8'))
-    response2 = self.client.recv(1024).decode()
-    retrieved_unread_list = server_response(response2)
-    for i in retrieved_unread_list:
-      print(i["message"])
-    # must return a list of DirectMessage objects containing all new messages
- 
+    try:
+      if self.token:
+        send_message = "new"
+        reading_msgs = msgs_response(self.token, send_message)
+        self.client.send(reading_msgs.encode('utf-8'))
+        response2 = self.client.recv(1024).decode()
+        retrieved_unread_list = server_response(response2)
+        return retrieved_unread_list
+    except Exception as e:
+      print(f"Error retrieving new messages: {e}")
+    return []
+        # must return a list of DirectMessage objects containing all new messages
+  
   def retrieve_all(self) -> list:
-    send_message = "all"
-    reading_msgs = msgs_response(self.token, send_message)
-    self.client.send(reading_msgs.encode('utf-8'))
-    response2 = self.client.recv(1024).decode()
-    retrieved_all_list = server_response(response2)
-    for i in retrieved_all_list:
-      print(i["message"])
+    try:
+      if self.token:
+        send_message = "all"
+        reading_msgs = msgs_response(self.token, send_message)
+        self.client.send(reading_msgs.encode('utf-8'))
+        response2 = self.client.recv(1024).decode()
+        retrieved_all_list = server_response(response2)
+        return retrieved_all_list
+    except Exception as e:
+      print(f"Error retrieving all messages: {e}")
     # must return a list of DirectMessage objects containing all messages
-    pass
+    return []
   
 def connect_to_server(server):
     port = "3021"

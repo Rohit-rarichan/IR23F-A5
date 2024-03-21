@@ -214,10 +214,11 @@ class Message:
         self.reciever = friend_username 
         self.message = entry 
         self.timestamp = timestamp
+        self.list_of_messages = None
 
     def save_message(self):
         message = {"sender" : self.sender, "reciever" : self.reciever, "message" : self.message, 
                    "timestamp" : self.timestamp}
-        list_of_messages = [] 
-        list_of_messages.append(message)
+        self.list_of_messages = [] 
+        self.list_of_messages.append(message)
 
