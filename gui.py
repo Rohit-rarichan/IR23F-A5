@@ -178,7 +178,6 @@ class MainApp(tk.Frame):
         self.password = None
         self.server = None
         self.recipient = None
-        self.direct_messenger = DirectMessenger(self.username, self.password)
         # You must implement this! You must configure and
         # instantiate your DirectMessenger instance after this line.
         #self.direct_messenger = ... continue!
@@ -186,6 +185,7 @@ class MainApp(tk.Frame):
         # After all initialization is complete,
         # call the _draw method to pack the widgets
         # into the root frame
+        self.direct_messenger = DirectMessenger( self.server, self.username, self.password)
         self._draw()
         self.body.insert_contact("studentexw23") # adding one example student.
 
@@ -223,7 +223,7 @@ class MainApp(tk.Frame):
         self.username = ud.user
         self.password = ud.pwd
         self.server = ud.server
-        self.direct_messenger = DirectMessenger(self.username, self.password, self.server)
+        self.direct_messenger = DirectMessenger(self.server, self.username, self.password)
         # You must implement this!
         # You must configure and instantiate your
         # DirectMessenger instance after this line.

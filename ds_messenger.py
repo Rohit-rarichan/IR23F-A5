@@ -11,12 +11,12 @@ class DirectMessage:
 
 
 class DirectMessenger:
-  def __init__(self, username=None, password=None):
-    self.dsuserver = "168.235.86.101"
+  def __init__(self, dsuserver=None, username=None, password=None):
+    self.token = None
+    self.dsuserver = dsuserver #"168.235.86.101"
     self.username = username
     self.password = password
     self.client = None
-    self.token = None
 
 		
   def send(self, message:str, recipient:str) -> bool:
@@ -36,8 +36,8 @@ class DirectMessenger:
           response1 = self.client.recv(1024).decode()
           print(response1)
           return True
-    except:
-      pass
+    except Exception as e:
+      print(f"Error retrieving new messages: {e}")
 		
   def retrieve_new(self) -> list:
     try:
@@ -50,7 +50,6 @@ class DirectMessenger:
         return retrieved_unread_list
     except Exception as e:
       print(f"Error retrieving new messages: {e}")
-    return []
         # must return a list of DirectMessage objects containing all new messages
   
   def retrieve_all(self) -> list:
@@ -65,7 +64,6 @@ class DirectMessenger:
     except Exception as e:
       print(f"Error retrieving all messages: {e}")
     # must return a list of DirectMessage objects containing all messages
-    return []
   
 def connect_to_server(server):
     port = "3021"
